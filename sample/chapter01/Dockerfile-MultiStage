@@ -1,0 +1,7 @@
+FROM golang:alpine3.14 as builder
+COPY ./main.go ./
+RUN go build -o /go-app ./main.go
+
+FROM alpine:3.14
+COPY --from=builder /go-app .
+ENTRYPOINT ["./go-app"]

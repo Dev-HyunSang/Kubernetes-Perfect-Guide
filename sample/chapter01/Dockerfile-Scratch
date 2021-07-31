@@ -1,0 +1,7 @@
+FROM golang:alpine3.14 as builder
+COPY ./main.go ./
+RUN CGO_ENABLED=0 go build -o /go-app ./main.go
+
+FROM scratch
+COPY --from=builder /go-app .
+ENTRYPOINT ["./go-app"]
