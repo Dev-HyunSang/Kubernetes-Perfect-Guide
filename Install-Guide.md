@@ -46,3 +46,39 @@ $ kubectl get nodes
 # 기동 중인 쿠버네티스 관련 구성 요소 확인
 $ docker container ls --format 'table {{.Image}}\t{{.Command}}' | grep -v pause
 ```
+
+## Kind 설치
+```shell
+# kind 설치
+$ brew install kind
+
+# kind 버전 확인
+$ kind version
+```
+
+### [kind 클러스터 설정 예제](./sample/chapter03/kind.yaml)
+```yaml
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+nodes: 
+- role: control-plane
+  image: kindest/node:v1.18.15
+- role: control-plane
+  image: kindest/node:v1.18.15
+- role: control-plane
+  image: kindest/node:v1.18.15
+- role: worker
+  image: kindest/node:v1.18.15
+- role: worker
+  image: kindest/node:v1.18.15
+- role: worker
+  image: kindest/node:v1.18.15
+```
+```shell
+# kind에서 쿠버네티스 클러스터 기동
+$ kind create cluster --config kind.yaml --name kindcluster
+```
+
+**오류 발생:** 오류 발생 이유는 맥의 메모리가 부족해서 오류가 발생합니다ㅠㅠ  
+[**ERROR: failed to create cluster: failed to init node with kubeadm #1437**](https://github.com/kubernetes-sigs/kind/issues/1437)
+![Kind Create](./images/kind-create.jpg)
