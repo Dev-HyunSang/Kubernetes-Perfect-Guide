@@ -81,4 +81,19 @@ $ kind create cluster --config kind.yaml --name kindcluster
 
 **오류 발생:** 오류 발생 이유는 맥의 메모리가 부족해서 오류가 발생합니다ㅠㅠ  
 [**ERROR: failed to create cluster: failed to init node with kubeadm #1437**](https://github.com/kubernetes-sigs/kind/issues/1437)
+
 ![Kind Create](./images/kind-create.jpg)
+
+```shell
+# 컨텍스트 전환
+$ kubectl config use-context kind-kindcluster
+
+# 노드 확인
+$ kubectl get nodes
+
+# 도커 컨테이너 확인 (일부 발췌)
+$ docker container ls
+
+# kind 클러스터 삭제
+$kind delete cluster --name kind-kin
+```
