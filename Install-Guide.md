@@ -97,3 +97,124 @@ $ docker container ls
 # kind 클러스터 삭제
 $kind delete cluster --name kind-kin
 ```
+
+## GKE
+```shell
+# Google Cloud SDK(gcloud 명령어를 포함) 설치
+$ curl https://sdk.cloud.google.com | bash
+
+# 설치한 gcloud 명령어를 사용할 수 있도록 셀을 재가동
+$ exec -l $SHELL
+
+# gcloud CLI 인증
+$ gcloud init
+```
+
+```shell
+$ gcloud container get-server-config --zone asia-northeast3-a
+Fetching server config for asia-northeast3-a
+channels:
+- channel: RAPID
+  defaultVersion: 1.20.8-gke.900
+  validVersions:
+  - 1.21.3-gke.900
+  - 1.21.3-gke.100
+  - 1.20.9-gke.700
+  - 1.20.8-gke.900
+- channel: REGULAR
+  defaultVersion: 1.20.8-gke.900
+  validVersions:
+  - 1.20.8-gke.900
+- channel: STABLE
+  defaultVersion: 1.18.20-gke.900
+  validVersions:
+  - 1.19.12-gke.2100
+  - 1.19.11-gke.2101
+  - 1.18.20-gke.900
+defaultClusterVersion: 1.20.8-gke.900
+defaultImageType: COS
+validImageTypes:
+- UBUNTU_CONTAINERD
+- WINDOWS_SAC
+- WINDOWS_LTSC
+- WINDOWS_SAC_CONTAINERD
+- WINDOWS_LTSC_CONTAINERD
+- COS
+- UBUNTU
+- COS_CONTAINERD
+validMasterVersions:
+- 1.20.9-gke.700
+- 1.20.8-gke.2100
+- 1.20.8-gke.900
+- 1.20.8-gke.700
+- 1.19.13-gke.700
+- 1.19.12-gke.2100
+- 1.19.12-gke.1100
+- 1.19.12-gke.900
+- 1.19.12-gke.700
+- 1.19.11-gke.2101
+- 1.19.11-gke.1701
+- 1.19.10-gke.1701
+- 1.19.10-gke.1601
+- 1.19.10-gke.1001
+- 1.19.10-gke.1000
+- 1.19.9-gke.1900
+- 1.18.20-gke.3000
+- 1.18.20-gke.2300
+- 1.18.20-gke.900
+- 1.18.20-gke.501
+- 1.17.17-gke.9100
+- 1.17.17-gke.8200
+- 1.17.17-gke.7800
+- 1.17.17-gke.7200
+- 1.17.17-gke.6700
+- 1.17.17-gke.6000
+- 1.17.17-gke.5400
+- 1.17.17-gke.4900
+- 1.17.17-gke.4400
+- 1.17.17-gke.3700
+validNodeVersions:
+- 1.20.9-gke.700
+- 1.20.8-gke.2100
+- 1.20.8-gke.900
+# 생략
+```
+
+```shell
+# GKE 클러스터 'k8s' todtjd
+$ gcloud container clusters create k8s \
+--cluster-version 1.18.20-gke.900 \
+--zone asia-northeast3-a \
+--num-nodes 3
+```
+
+```shell
+$ gcloud container clusters get-credentials k8s --zone asia-northeast3-a
+Fetching cluster endpoint and auth data.
+kubeconfig entry generated for k8s.
+```
+
+```shell
+# 현재 사용자의 이메일 주소를 가져온다
+$ GCP_USER=`gcloud config get-value core/account`
+
+# kubectl을 사용할 GCP IAM 사용자에게 클러스터 관리자 권한을 설정
+$kubectl create --save-config clusterrolebinding iam-cluster-admin-binding \
+--clusterrole=cluster-admin \
+--user=${GCP_USER}
+clusterrolebinding.rbac.authorization.k8s.io/iam-cluster-admin-binding created
+```
+
+![GKE DashBoard](./images/gke-dashboard.png)
+구글 클라우드 콘솔의 자체 대시보드를 사용하여 쿠버네티스 클러스터를 관리할 수 있습니다.
+
+```shell
+# GKE 클러스터 'k8s' 삭제
+$ gcloud container clusters delete k8s --zone asia-northeast3-a
+The following clusters will be deleted.
+ - [k8s] in [asia-northeast3-a]
+
+Do you want to continue (Y/n)?  Y
+
+Deleting cluster k8s...⠛
+```
