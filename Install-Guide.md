@@ -218,3 +218,55 @@ Do you want to continue (Y/n)?  Y
 
 Deleting cluster k8s...⠛
 ```
+
+## AKS
+```shell
+# Azure CLI에 의존 패키지 설치
+$ pip3 install paramiko
+
+# Azure CLI 설치 (맥 운영체제의 경우만)
+$ brew install azure-cli
+
+#  Azure CLI 인증
+$ az login
+```
+
+AKS에서는 리소스 그룹을 만든 후에 그 그룹을 사용하여 AKS 클러스터를 생성한다.
+
+```shell
+# AKS에서 사용 가능한 쿠버네티스 버전 확인
+$ az aks get-versions -l koreasouth
+
+# 리소스 그룹 생성
+$ az group create \
+--name k8srg \
+--location koreasouth
+
+# Service principal 생성
+az ad sp create-for-rbac \
+> --skip-assignment \
+> --name myAKSClusterServicePrincipal
+
+# AKS 클러스터 'k8s' 생성
+$ az aks create \
+--name k8s \
+--kubernetes-version 1.18.19 \ # 쿠버네티스 버전
+--node-count 3 \ 
+--resource-group k8srg \
+--generate-ssh-keys \
+--service-principal <appId> \ 
+--client-secret <password>
+```
+
+```shell
+# AKS 클러스터 'k8s'에 접속할 인증 정보를 가져온다
+$ az aks get-credentials --name k8s --resource-group k8srg
+```
+클러스터가 생성되었다면 kubectl을 사용하여 AKS 클러스터를 관리할 수 있다.
+
+```shell
+# AKS 클러스터 'k8s'의 쿠버네티스 대시보드 표시
+$ az aks browse --name k8s --resource-group k8srg
+```
+필요 없어진 AKS 클러스터를 az 명령어를 사용하여서 삭제할 수 있다.
+
