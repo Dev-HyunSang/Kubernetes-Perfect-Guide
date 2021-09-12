@@ -1,9 +1,17 @@
-# 책의 예제의 경우 Control-Plane 3개와 Worker 3개였지만 매모리 부족으로 인해서 축소함.
-# Control-Plane 1개와 Worker 1개로 축소 시킴.
+# kindtest/node version Checking
+# https://hub.docker.com/r/kindest/node/tags?page=1&ordering=last_updated
 apiVersion: kind.x-k8s.io/v1alpha4
 kind: Cluster
 nodes:
   - role: control-plane
-    image: kindest/node:v1.18.15
+    image: kindest/node:v1.22.1
+  - role: control-plane
+    image: kindest/node:v1.22.1
+  - role: control-plane
+    image: kindest/node:v1.22.1
   - role: worker
-    image: kindest/node:v1.18.15
+    image: kindest/node:v1.22.1
+  - role: worker
+    image: kindest/node:v1.22.1
+  - role: worker
+    image: kindest/node:v1.22.1
